@@ -3,7 +3,38 @@ import Card from '../components/card'
 import FormGroup from "../components/form-group";
 import { withRouter } from 'react-router-dom';
 
+import UsuarioService from "../app/service/usuarioService";
+import LocalStorageService from "../app/service/localStorageService";
+
+import { mensagemErro } from '../components/toastr';
+
 class Login extends React.Component {
+
+    state = {
+        email: '',
+        senha: ''
+    }
+
+    constructor(){
+        super();
+        this.service = new UsuarioService();
+    }
+
+    entrar = () => {
+        this.service.autenticar({
+            email: this.state.email,
+            senha: this.state.senha
+        }).then((response) => {
+            if(response){
+                LocalStorageService.adicionarItem('_usuario_logado', response.data);
+                this.props.history.push('/home');
+            }else{
+                console.log("Deu ruim.");
+            }
+        }).catch( erro => {
+            mensagemErro(erro.response.data)
+        })
+    }
 
     prepareCadastrar = () => {
         this.props.history.push('/cadastro-usuarios');
@@ -16,23 +47,30 @@ class Login extends React.Component {
                     <div className="bs-docs-section">
                         <Card title="Login">
                             <div className="row">
+                                <span>{mensagemErro}</span>
+                            </div>
+                            <div className="row">
                                 <div className="col-lg-12">
                                     <div className="bs-component">
                                         <fieldset>
                                             <FormGroup label="Email: *" htmlFor="exampleInputEmail1">
-                                            <input type="email" 
+                                                <input type="email" 
                                                     className="form-control" 
                                                     id="exampleInputEmail1" 
                                                     aria-describedby="emailHelp" 
-                                                    placeholder="Digite o Email" />
+                                                    placeholder="Digite o Email"
+                                                    name="email"
+                                                    onChange={e => this.setState({email: e.target.value})} />
                                             </FormGroup>
                                             <FormGroup label="Senha: *" htmlFor="exampleInputPassword1">
                                                 <input type="password" 
                                                         className="form-control" 
                                                         id="exampleInputPassword1" 
-                                                        placeholder="Password" />
+                                                        placeholder="Password"
+                                                        name="senha"
+                                                        onChange={e => this.setState({senha: e.target.value})} />
                                             </FormGroup>
-                                            <button className="btn btn-success">
+                                            <button onClick={this.entrar} className="btn btn-success">
                                                 Entrar
                                             </button>
                                             <button onClick={this.prepareCadastrar} className="btn btn-danger">
