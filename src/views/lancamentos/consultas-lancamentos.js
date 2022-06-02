@@ -5,7 +5,7 @@ import LocalStorageService from "../../app/service/localStorageService";
 import Card from "../../components/card";
 import FormGroup from "../../components/form-group";
 import SelectMenu from "../../components/selectMenu";
-import { mensagemErro } from "../../components/toastr";
+import { mensagemErro, mensagemSucesso } from "../../components/toastr";
 import LancamentosTable from "./lancamentosTable";
 
 class ConsultaLancamentos extends React.Component{
@@ -49,14 +49,22 @@ class ConsultaLancamentos extends React.Component{
         console.log(id)
     }
 
-    excluir = (id) => {
-        console.log(id)
+    deletar = (lancamento) => {
+        this.service.deletar(lancamento.id)
+            .then(response => {
+                const lancamentos = this.state.lancamentos;
+                const index = lancamentos.indexOf(lancamento);
+                lancamentos.splice(index, 1);
+                this.setState(lancamentos)
+                mensagemSucesso('Lançamento deletado com sucesso!')
+            }).catch(error => {
+                mensagemErro('Ocorreu um erro ao tentar deletar o lançamento!')
+            })
     }
 
     render(){
 
         const meses = this.service.obterListaMeses();
-
         const tipos = this.service.obterListaTipos();
 
         return(
@@ -111,8 +119,8 @@ class ConsultaLancamentos extends React.Component{
                         <div className="bs-component">
                             <LancamentosTable 
                                 lancamentos={this.state.lancamentos} 
-                                deletar={this.deletar}
-                                editar={this.editar}/>
+                                deletarAction={this.deletar}
+                                editarAction={this.editar}/>
                         </div>
                     </div>
                 </div>

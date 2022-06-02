@@ -15,14 +15,14 @@ const LancamentosTable = (props) => {
                     <button 
                         type='button'
                         className='btn btn-success' 
-                        onClick={e => props.editar(lancamento.id)}
+                        onClick={e => props.editarAction(lancamento.id)}
                         style={{marginRight: '5px'}}>
                         Editar
                     </button>
                     <button 
                         type='button' 
                         className='btn btn-danger'
-                        onClick={e => props.deletar(lancamento.id)}>
+                        onClick={e => props.deletarAction(lancamento)}>
                         Excluir
                     </button>
                 </td>
