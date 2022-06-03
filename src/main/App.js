@@ -9,6 +9,10 @@ import '../custom.css'
 import 'toastr/build/toastr.css'
 
 
+import "primereact/resources/themes/bootstrap4-light-blue/theme.css";  //theme
+import "primereact/resources/primereact.min.css";                  //core css
+import "primeicons/primeicons.css";                                //icons
+
 class App extends React.Component {
   render() {
     return(
@@ -18,6 +22,7 @@ class App extends React.Component {
       <div className="container">
         <Rotas/>
       </div>
+      <script src="https://unpkg.com/primereact/primereact.all.min.js"></script>
       </>
     )
   }
