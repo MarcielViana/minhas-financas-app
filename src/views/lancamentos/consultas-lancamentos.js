@@ -7,7 +7,7 @@ import LocalStorageService from "../../app/service/localStorageService";
 import Card from "../../components/card";
 import FormGroup from "../../components/form-group";
 import SelectMenu from "../../components/selectMenu";
-import { mensagemErro, mensagemSucesso } from "../../components/toastr";
+import { mensagemAlerta, mensagemErro, mensagemSucesso } from "../../components/toastr";
 import LancamentosTable from "./lancamentosTable";
 
 class ConsultaLancamentos extends React.Component{
@@ -43,6 +43,9 @@ class ConsultaLancamentos extends React.Component{
         }
 
         this.service.consultar(lancamentoFiltro).then(resposta => {
+            if(resposta.data < 1){
+                mensagemAlerta("Nenhum resultado encontrado.")
+            }
             this.setState({lancamentos: resposta.data})
         }).catch(error => {
             console.log(error)
@@ -50,7 +53,7 @@ class ConsultaLancamentos extends React.Component{
     }
 
     editar = (id) => {
-        console.log(id)
+        this.props.history.push(`/cadastro-lancamentos/${id}`)
     }
 
     abriConfirmacao = (lancamento) => {
@@ -67,11 +70,29 @@ class ConsultaLancamentos extends React.Component{
                 const lancamentos = this.state.lancamentos;
                 const index = lancamentos.indexOf(this.state.lancamentoDeletar);
                 lancamentos.splice(index, 1);
-                this.setState(lancamentos)
+                this.setState({lancamentos: lancamentos, showConfirmDialog: false});
                 mensagemSucesso('Lançamento deletado com sucesso!')
             }).catch(() => {
                 mensagemErro('Ocorreu um erro ao tentar deletar o lançamento!')
             })
+    }
+
+    preparaFormularioCadastro = () => {
+        this.props.history.push('/cadastro-lancamentos')
+    }
+
+    alterarStatus = (lancamento, status) => {
+        this.service.alterarStatus(lancamento.id, status)
+        .then(response => {
+            const lancamentos = this.state.lancamentos;
+            const index = lancamentos.indexOf(lancamento);
+            if(index !== -1){
+                lancamento['status'] = status;
+                lancamentos[index] = lancamento;
+                this.setState({lancamento});
+            }
+            mensagemSucesso("Status alterado com sucesso!")
+        })
     }
 
     render(){
@@ -127,8 +148,17 @@ class ConsultaLancamentos extends React.Component{
                                             lista={tipos}/>
                             </FormGroup>
 
-                            <button type="button" onClick={this.buscar} className="btn btn-success" style={{marginRight: '5px'}}>Buscar</button>
-                            <button type="button" className="btn btn-danger">cadastrar</button>
+                            <button type="button" 
+                                    onClick={this.buscar} 
+                                    className="btn btn-success" 
+                                    style={{marginRight: '5px'}}>
+                                    <i className="pi pi-search"></i> Buscar
+                            </button>
+                            <button type="button" 
+                                    onClick={this.preparaFormularioCadastro}  
+                                    className="btn btn-danger">
+                                    <i className="pi pi-plus"></i> Cadastrar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -139,13 +169,14 @@ class ConsultaLancamentos extends React.Component{
                             <LancamentosTable 
                                 lancamentos={this.state.lancamentos} 
                                 deletarAction={this.abriConfirmacao}
-                                editarAction={this.editar}/>
+                                editarAction={this.editar}
+                                alterarStatus={this.alterarStatus}/>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <Dialog header="Godfather"
+                    <Dialog header="Confirmação"
                                     visible={this.state.showConfirmDialog}
                                     style={{width: '50vw'}}
                                     modal={true}

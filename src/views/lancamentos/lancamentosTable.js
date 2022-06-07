@@ -12,18 +12,30 @@ const LancamentosTable = (props) => {
                 <td>{lancamento.mes}</td>
                 <td>{lancamento.status}</td>
                 <td>
-                    <button 
-                        type='button'
-                        className='btn btn-success' 
-                        onClick={e => props.editarAction(lancamento.id)}
-                        style={{marginRight: '5px'}}>
-                        Editar
+                    <button className='btn btn-success' title='Efetivar'
+                            disabled={ lancamento.status !== 'PENDENTE' }
+                            onClick={e => props.alterarStatus(lancamento, 'EFETIVADO')}
+                            type='button'
+                            style={{marginRight: '5px'}}>
+                            <i className='pi pi-check'></i>
                     </button>
-                    <button 
-                        type='button' 
-                        className='btn btn-danger'
-                        onClick={e => props.deletarAction(lancamento)}>
-                        Excluir
+                    <button className='btn btn-warning' title='Cancelar'
+                            disabled={ lancamento.status !== 'PENDENTE' }
+                            onClick={e => props.alterarStatus(lancamento, 'CANCELADO')}
+                            type='button'
+                            style={{marginRight: '5px'}}>
+                            <i className='pi pi-times'></i>
+                    </button>
+                    <button className='btn btn-primary' title='Editar'
+                            type='button'
+                            onClick={e => props.editarAction(lancamento.id)}
+                            style={{marginRight: '5px'}}>
+                            <i className='pi pi-pencil'></i>
+                    </button>
+                    <button className='btn btn-danger' title='Excluir'
+                            type='button' 
+                            onClick={e => props.deletarAction(lancamento)}>
+                            <i className='pi pi-trash'></i>
                     </button>
                 </td>
             </tr>

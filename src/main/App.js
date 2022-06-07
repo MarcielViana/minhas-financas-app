@@ -22,7 +22,7 @@ class App extends React.Component {
       <div className="container">
         <Rotas/>
       </div>
-      <script src="https://unpkg.com/primereact/primereact.all.min.js"></script>
+      {/* <script src="https://unpkg.com/primereact/primereact.all.min.js"></script> */}
       </>
     )
   }
