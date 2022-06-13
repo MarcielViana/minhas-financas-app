@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Route, Switch, HashRouter, Redirect } from 'react-router-dom'
+import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom'
 import Home from "../views/home";
 import Login from "../views/login";
 import CadastroUsuario from "../views/cadastroUsuario";
@@ -27,7 +27,7 @@ function RotaAutenticada({component: Component, isUsuarioAutenticado, ...props})
 
 function Rotas(props) {
     return(
-        <HashRouter>
+        <BrowserRouter>
             <Switch>
                 <Route exact path="/" component={LandingPage} />
                 <Route exact path="/login" component={Login} />
@@ -37,7 +37,7 @@ function Rotas(props) {
                 <RotaAutenticada isUsuarioAutenticado={props.isUsuarioAutenticado} path="/consultas-lancamentos" component={ConsultasLancamentos} />
                 <RotaAutenticada isUsuarioAutenticado={props.isUsuarioAutenticado} path="/cadastro-lancamentos/:id?" component={CadastroLancamentos} />
             </Switch>
-        </HashRouter>
+        </BrowserRouter>
     )
 }
 
